@@ -1,3 +1,4 @@
+package colman.main;
 public class Creator {
 
 	static int interval = 60000;
