@@ -10,6 +10,10 @@ public class Poll {
 
 	final List<PollRequest> pollRequestList = new ArrayList<PollRequest>();
 
+	public List<PollRequest> getPollRequestList() {
+		return pollRequestList;
+	}
+
 	public Poll(final JSONObject jsonObject) {
 		final JSONArray poll = (JSONArray) jsonObject.get("poll");
 

@@ -1,6 +1,6 @@
 package colman.main;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,11 +17,11 @@ public class ConfigReaderTest {
 	}
 
 	@Test
-	public void test() {
+	public void testReadConfigFile() {
 		final ConfigReader configReader = ConfigReader
 				.getInstance("./test/colman/main/sample.conf");
 		final Poll poll = configReader.getPoll();
-		fail("Not yet implemented");
+		assertTrue(poll.getPollRequestList().size() == 2);
 	}
 
 }
