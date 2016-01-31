@@ -16,24 +16,30 @@ public class ConfigReader {
 
 	private int numOfThread = 1;
 
-	private Integer interval = 10000;
+	private int interval = 10000;
 
-	public static ConfigReader getInstance(final String configFile) {
+	public static ConfigReader getInstance() {
 		if (configReader == null) {
-			configReader = new ConfigReader(configFile);
+			configReader = new ConfigReader();
 		}
 		return configReader;
 	}
 
-	private ConfigReader(final String configFile) {
+	private ConfigReader() {
+
+	}
+
+	public void read(final String configFile) {
 		final JSONParser jsonParser = new JSONParser();
 
 		try {
 			final Object obj = jsonParser.parse(new FileReader(configFile));
 			final JSONObject jsonObject = (JSONObject) obj;
 			this.poll = new Poll(jsonObject);
-			this.numOfThread = ((Integer) jsonObject.get("numOfThread"));
-			this.interval = ((Integer) jsonObject.get("interval"));
+			this.numOfThread = Integer.valueOf((String) jsonObject
+					.get("numOfThread"));
+			this.interval = Integer
+					.valueOf((String) jsonObject.get("interval"));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -53,8 +59,8 @@ public class ConfigReader {
 		return numOfThread;
 	}
 
-	public Integer getInterval() {
-		return interval;
+	public long getInterval() {
+		return (long) (Math.random() * interval);
 	}
 
 }

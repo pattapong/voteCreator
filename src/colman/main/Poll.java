@@ -10,7 +10,7 @@ public class Poll {
 
 	final List<PollRequest> pollRequestList = new ArrayList<PollRequest>();
 
-	public List<PollRequest> getPollRequestList() {
+	public List<PollRequest> getAllPollRequestList() {
 		return pollRequestList;
 	}
 
@@ -22,5 +22,25 @@ public class Poll {
 			final PollRequest newPollRequest = new PollRequest(request);
 			pollRequestList.add(newPollRequest);
 		}
+	}
+
+	public List<PollRequest> getMainPollRequestList() {
+		final List<PollRequest> mainRequestList = new ArrayList<PollRequest>();
+		for (final PollRequest next : pollRequestList) {
+			if (!next.isSubRequest()) {
+				mainRequestList.add(next);
+			}
+		}
+		return mainRequestList;
+	}
+
+	public List<PollRequest> getSubPollRequestList() {
+		final List<PollRequest> subRequestList = new ArrayList<PollRequest>();
+		for (final PollRequest next : pollRequestList) {
+			if (next.isSubRequest()) {
+				subRequestList.add(next);
+			}
+		}
+		return subRequestList;
 	}
 }

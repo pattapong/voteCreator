@@ -30,7 +30,9 @@ public class PollRequest {
 	private List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 	private Header[] headers;
 	private BasicClientCookie[] cookies;
-	private String resultRegexValidator;
+	private String resultValidateRegex;
+	private boolean isSubRequest = false;
+	private String resultExtractRegex;
 
 	public PollRequest(final JSONObject jsonObject) {
 		this.name = (String) jsonObject.get("name");
@@ -39,8 +41,11 @@ public class PollRequest {
 		this.url = (String) jsonObject.get("url");
 		this.domain = (String) jsonObject.get("domain");
 		this.path = (String) jsonObject.get("path");
-		this.resultRegexValidator = ((String) jsonObject
-				.get("resultRegexValidator"));
+		this.resultValidateRegex = ((String) jsonObject
+				.get("resultValidateRegex"));
+		this.resultExtractRegex = ((String) jsonObject
+				.get("resultExtractRegex"));
+		this.isSubRequest = (Boolean) jsonObject.get("isSubRequest");
 
 		final JSONArray headerArray = (JSONArray) jsonObject.get("header");
 		headers = new BasicHeader[headerArray.size()];
@@ -62,6 +67,7 @@ public class PollRequest {
 			final Iterator iterator = keySet.iterator();
 			final String next = (String) iterator.next();
 			final String value = (String) parameter.get(next);
+
 			final NameValuePair newNameValuePair = new BasicNameValuePair(next,
 					value);
 			urlParameters.add(newNameValuePair);
@@ -132,8 +138,20 @@ public class PollRequest {
 		return cookieStore;
 	}
 
-	public String getResultRegexValidator() {
-		return resultRegexValidator;
+	public String getResultValidateRegex() {
+		return resultValidateRegex;
+	}
+
+	public List<NameValuePair> getUrlParameters() {
+		return urlParameters;
+	}
+
+	public boolean isSubRequest() {
+		return isSubRequest;
+	}
+
+	public String getResultExtractRegex() {
+		return resultExtractRegex;
 	}
 
 }

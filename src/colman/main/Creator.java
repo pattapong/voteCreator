@@ -10,8 +10,8 @@ public class Creator {
 
 		if (args.length > 0) {
 			configFile = String.valueOf(args[0]);
-			final ConfigReader configReader = ConfigReader
-					.getInstance(configFile);
+			final ConfigReader configReader = ConfigReader.getInstance();
+			configReader.read(configFile);
 			final int numThread = configReader.getNumOfThread();
 			for (int i = 1; i < numThread; i++) {
 				System.out.println("Voter #" + i);

@@ -1,35 +1,77 @@
 package colman.main;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 public class Voter extends Thread {
 
 	private void executeRequest() throws ClientProtocolException, IOException,
 			InterruptedException {
-		final ConfigReader configReader = ConfigReader.getInstance("");
-		final Poll poll = configReader.getPoll();
-		final List<PollRequest> requestList = poll.getPollRequestList();
 
-		for (final PollRequest pollRequest : requestList) {
-			final long sleepTime = (long) (Math.random() * configReader
-					.getInterval());
-			Thread.sleep(sleepTime);
-			final BasicCookieStore cookieStore = pollRequest.getCoookies();
-			final HttpClient client = HttpClientBuilder.create()
-					.setDefaultCookieStore(cookieStore).build();
-			final HttpUriRequest request = pollRequest.getRequest();
-			final HttpResponse response = client.execute(request);
-			final StringBuffer result = Helper.getResponseResult(response);
-			final String regex = pollRequest.getResultRegexValidator();
-			if (Helper.validate(regex, result.toString())) {
+		final List<RequestResultPair> requestResultPair = new ArrayList<RequestResultPair>();
+
+		executeSubRequest(requestResultPair);
+
+		executeMainRequest(requestResultPair);
+	}
+
+	private void executeSubRequest(
+			final List<RequestResultPair> requestResultPair)
+			throws UnsupportedEncodingException, ClientProtocolException,
+			IOException {
+
+		final ConfigReader configReader = ConfigReader.getInstance();
+
+		final Poll poll = configReader.getPoll();
+
+		final List<PollRequest> subRequestList = poll.getSubPollRequestList();
+
+		for (final PollRequest subRequest : subRequestList) {
+
+			// TODO Replace function with built in function
+			Helper.substituteUrlParametersWithBuiltInFunction(subRequest
+					.getUrlParameters());
+
+			final String result = Helper.execute(subRequest);
+
+			String pattern = subRequest.getResultExtractRegex();
+
+			final String extractedResult = Helper
+					.extractResult(pattern, result);
+
+			requestResultPair.add(new RequestResultPair(subRequest.getName(),
+					extractedResult));
+		}
+
+	}
+
+	private void executeMainRequest(
+			final List<RequestResultPair> requestResultPair)
+			throws InterruptedException, UnsupportedEncodingException,
+			IOException, ClientProtocolException {
+
+		final ConfigReader configReader = ConfigReader.getInstance();
+
+		final Poll poll = configReader.getPoll();
+
+		final List<PollRequest> mainRequestList = poll.getMainPollRequestList();
+
+		for (final PollRequest mainRequest : mainRequestList) {
+
+			Thread.sleep(configReader.getInterval());
+
+			Helper.subStituteUrlParametersWithRequestResultPair(
+					mainRequest.getUrlParameters(), requestResultPair);
+
+			final String result = Helper.execute(mainRequest);
+
+			final String regex = mainRequest.getResultValidateRegex();
+
+			if (Helper.validate(regex, result)) {
 				System.out.println("Success");
 			} else {
 				System.out.println("Failed");
