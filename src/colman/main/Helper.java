@@ -20,7 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class Helper {
 
-	private static final String REQUEST_REGEX = "<%=request\\(.*\\)/%>)";
+	private static final String REQUEST_REGEX = "<%=request\\((.*)\\)/%>";
 	private static final String FUNCTION_REGEX = "<%=function\\((.*)\\)/%>";
 
 	public static StringBuffer getResponseResult(final HttpResponse response)
@@ -176,14 +176,15 @@ public class Helper {
 
 	}
 
-	private static String extractRequestName(final String requestString) {
+	public static String extractRequestName(final String requestString) {
 		
 		final Pattern r = Pattern.compile(REQUEST_REGEX);
 
 		final Matcher m = r.matcher(requestString);
 
 		if (m.find()) {
-			return m.group(0);
+			int a = m.groupCount();
+			return m.group(1);
 		}
 
 		return null;

@@ -9,4 +9,9 @@ public class BuiltInDate implements IBuiltInFunction {
 		return (new Date()).toString();
 	}
 
+	@Override
+	public String getFunctionName() {
+		return "date()";
+	}
+
 }

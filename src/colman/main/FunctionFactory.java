@@ -6,7 +6,7 @@ public class FunctionFactory {
 		
 		IBuiltInFunction builtInFunction = null;
 		
-		if (functionString.matches("<%=function(date())/%>")){
+		if (functionString.equalsIgnoreCase("<%=function(date())/%>")){
 			builtInFunction = new BuiltInDate();
 		}
 		
