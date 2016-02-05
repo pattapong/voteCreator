@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,36 +34,21 @@ public class Helper {
 		return result;
 	}
 
-	public static List<NameValuePair> getUrlParameters() {
-		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		urlParameters.add(new BasicNameValuePair("", ""));
-		return urlParameters;
-	}
-
-	public static String getVoteCount(String text) {
-		final String patternString = "<Vote Name>.*?\\((.*?)\\)";
-		final Pattern pattern = Pattern.compile(patternString);
-		final Matcher matcher = pattern.matcher(text);
-		if (matcher.find()) {
-			return matcher.group(0);
-		}
-		return "";
-	}
-
-	public static String extractNFactor(String result) {
-		String temp = result
-				.substring(result.indexOf("'") + 1, result.length());
-		String temp2 = temp.substring(0, temp.indexOf("'"));
-		return temp2;
-	}
-
+	/**
+	 * Validate the result, true if matched, false otherwise
+	 * 
+	 * @param regex
+	 *            regular expression
+	 * @param input
+	 *            input string
+	 * @return true if matched, false otherwise
+	 */
 	public static boolean validate(final String regex, final String input) {
 
-		final Pattern pattern = Pattern.compile(regex);
-		if (!pattern.matcher(input).matches()) {
-			return false;
+		if (input.matches(regex)) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static String execute(final PollRequest pollRequest)
@@ -92,7 +76,7 @@ public class Helper {
 		final Matcher m = r.matcher(result);
 
 		if (m.find()) {
-			return m.group(0);
+			return m.group(1);
 		}
 
 		return null;
@@ -106,7 +90,7 @@ public class Helper {
 		substituteUrlParameterValueWithBuiltInFunction(urlParameters);
 	}
 
-	private static void substituteUrlParameterValueWithBuiltInFunction(
+	public static void substituteUrlParameterValueWithBuiltInFunction(
 			final List<NameValuePair> urlParameters) {
 		for (int i = 0; i < urlParameters.size(); i++) {
 
@@ -127,7 +111,7 @@ public class Helper {
 		}
 	}
 
-	private static void subsituteUrlParameterNameWithBuiltInFunction(
+	public static void subsituteUrlParameterNameWithBuiltInFunction(
 			final List<NameValuePair> urlParameters) {
 		for (int i = 0; i < urlParameters.size(); i++) {
 
@@ -177,7 +161,7 @@ public class Helper {
 	}
 
 	public static String extractRequestName(final String requestString) {
-		
+
 		final Pattern r = Pattern.compile(REQUEST_REGEX);
 
 		final Matcher m = r.matcher(requestString);

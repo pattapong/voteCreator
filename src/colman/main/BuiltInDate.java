@@ -6,7 +6,7 @@ public class BuiltInDate implements IBuiltInFunction {
 
 	@Override
 	public String execute() {
-		return (new Date()).toString();
+		return String.valueOf((new Date()).getTime());
 	}
 
 	@Override
