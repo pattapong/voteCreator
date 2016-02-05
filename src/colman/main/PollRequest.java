@@ -31,7 +31,7 @@ public class PollRequest {
 	private Header[] headers;
 	private BasicClientCookie[] cookies;
 	private String resultValidateRegex;
-	private boolean isSubRequest = false;
+	private Boolean isSubRequest = false;
 	private String resultExtractRegex;
 
 	public PollRequest(final JSONObject jsonObject) {
@@ -45,7 +45,8 @@ public class PollRequest {
 				.get("resultValidateRegex"));
 		this.resultExtractRegex = ((String) jsonObject
 				.get("resultExtractRegex"));
-		this.isSubRequest = (Boolean) jsonObject.get("isSubRequest");
+		this.isSubRequest = Boolean.valueOf((String) jsonObject
+				.get("isSubRequest"));
 
 		final JSONArray headerArray = (JSONArray) jsonObject.get("header");
 		headers = new BasicHeader[headerArray.size()];
